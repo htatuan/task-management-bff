@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "assets": [
+      {
+        "include": "**/*.proto",
+        "watchAssets": true
+      }
+    ]
+  }
+}

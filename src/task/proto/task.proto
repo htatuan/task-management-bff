@@ -1,0 +1,45 @@
+syntax = "proto3";
+
+package task;
+
+service TaskService {
+  rpc CreateTask (CreateTaskDto) returns (Task) {}
+  rpc FindAllTasks (OwnerId) returns (Tasks) {}
+  rpc FindOneTask (TaskId) returns (Task) {}
+  rpc UpdateTask (UpdateTaskDto) returns (Task) {}
+  rpc RemoveTask (TaskId) returns (RemoveTaskResponse) {}
+}
+
+message RemoveTaskResponse {
+  bool isSuccess =1;
+}
+
+message OwnerId {
+  int32 ownerId =1;
+}
+
+message UpdateTaskDto {
+  int32 id = 1;
+  string status =2;
+}
+
+message TaskId {
+  int32 id = 1;
+}
+
+message Tasks {
+  repeated Task Tasks = 1;
+}
+
+message CreateTaskDto {
+  string title = 1;
+  string status = 2;
+  int32 ownerId = 3;
+}
+
+message Task {
+  int32 id = 1;
+  string title = 2;
+  string status = 3;
+  int32 ownerId = 4;
+}

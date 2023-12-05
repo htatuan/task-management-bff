@@ -1,0 +1,14 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type Query {
+  task(id: Float!): Task!
+}
+
+type Task {
+  id: Float!
+  ownerId: String!
+  status: String!
+  title: String!
+}
