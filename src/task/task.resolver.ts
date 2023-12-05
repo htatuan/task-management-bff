@@ -3,20 +3,25 @@ import { TaskType } from './task.type';
 import { TaskService } from './task.service';
 import { TaskId } from './proto/task';
 import { ParseIntPipe } from '@nestjs/common';
+import { firstValueFrom } from 'rxjs';
+import { GraphQLError } from 'graphql';
 
 @Resolver((of) => TaskType)
 export class TaskResolver {
   constructor(private taskService: TaskService) {}
 
   @Query((returns) => TaskType)
-  async task(@Args('id', ParseIntPipe) id: number) {
+  async task(@Args('id', ParseIntPipe) id: number): Promise<any> {
     try {
       const taskId: TaskId = { id };
-      const a = this.taskService.findOneTask(taskId);
-      console.log(a);
+      const a = await firstValueFrom(this.taskService.findOneTask(taskId));
+
       return a;
     } catch (error) {
-      console.log('error');
+      console.log("error => ", error)
+      return new GraphQLError(error.details, {
+        extensions: { code: error.code },
+      });
     }
   }
 }
