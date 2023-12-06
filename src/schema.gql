@@ -2,8 +2,13 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type Mutation {
+  delete(id: Float!): Boolean!
+}
+
 type Query {
   task(id: Float!): Task!
+  tasks(ownerId: Float!): [Task!]!
 }
 
 type Task {
