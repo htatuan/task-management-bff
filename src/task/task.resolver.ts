@@ -18,7 +18,7 @@ export class TaskResolver {
 
   @Query(() => [TaskType])
   async findAllTasks(@Args('ownerId', ParseIntPipe) ownerId: number): Promise<Task[] | GraphQLError> {
-    return this.taskService.findAllTask({ ownerId });
+    return this.taskService.findAllTasks({ ownerId });
   }
 
   @Mutation(() => Boolean)
