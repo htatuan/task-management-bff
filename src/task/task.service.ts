@@ -9,7 +9,7 @@ import {
   UpdateTaskDto,
 } from './proto/task';
 import { ClientGrpc } from '@nestjs/microservices';
-import { lastValueFrom } from 'rxjs';
+import { firstValueFrom, lastValueFrom } from 'rxjs';
 import { GraphQLError } from 'graphql';
 
 @Injectable()
@@ -21,23 +21,32 @@ export class TaskService implements OnModuleInit {
     this.taskService =
       this.client.getService<TaskServiceClient>(TASK_SERVICE_NAME);
   }
-  create(createTaskDto: CreateTaskDto) {
-    return this.taskService.createTask(createTaskDto);
-  }
-
-  async findOneTask(id: TaskId): Promise<Task> {
+  async createTask(createTaskDto: CreateTaskDto): Promise<Task | GraphQLError> {
     try {
-      const res = await lastValueFrom(this.taskService.findOneTask(id));
-
-      return res;
+      const task = await firstValueFrom(
+        this.taskService.createTask(createTaskDto),
+      );
+      return task;
     } catch (error) {
-      throw new GraphQLError(error.details, {
+      return new GraphQLError(error.details, {
         extensions: { code: error.code },
       });
     }
   }
 
-  async findAllTask(ownerId: OwnerId): Promise<Task[]> {
+  async findOneTask(id: TaskId): Promise<Task | GraphQLError> {
+    try {
+      const res = await lastValueFrom(this.taskService.findOneTask(id));
+
+      return res;
+    } catch (error) {
+      return new GraphQLError(error.details, {
+        extensions: { code: error.code },
+      });
+    }
+  }
+
+  async findAllTask(ownerId: OwnerId): Promise<Task[] | GraphQLError> {
     try {
       const res = await lastValueFrom(this.taskService.findAllTasks(ownerId));
       if (!res.Tasks) {
@@ -45,23 +54,32 @@ export class TaskService implements OnModuleInit {
       }
       return res.Tasks;
     } catch (error) {
-      throw new GraphQLError(error.details, {
+      return new GraphQLError(error.details, {
         extensions: { code: error.code },
       });
     }
   }
 
-  updateTask(updateTaskDto: UpdateTaskDto) {
-    return this.taskService.updateTask(updateTaskDto);
+  async updateTask(updateTaskDto: UpdateTaskDto): Promise<Task | GraphQLError> {
+    try {
+      const task = await firstValueFrom(
+        this.taskService.updateTask(updateTaskDto),
+      );
+      return task;
+    } catch (error) {
+      return new GraphQLError(error.details, {
+        extensions: { code: error.code },
+      });
+    }
   }
 
-  async removeTask(taskId: TaskId): Promise<boolean> {
+  async removeTask(taskId: TaskId): Promise<boolean | GraphQLError> {
     try {
       const res = await lastValueFrom(this.taskService.removeTask(taskId));
 
       return res.isSuccess;
     } catch (error) {
-      throw new GraphQLError(error.details, {
+      return new GraphQLError(error.details, {
         extensions: { code: error.code },
       });
     }
