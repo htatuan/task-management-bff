@@ -3,11 +3,14 @@ import {
   CreateTaskDto,
   OwnerId,
   TASK_SERVICE_NAME,
+  Task,
   TaskId,
   TaskServiceClient,
   UpdateTaskDto,
 } from './proto/task';
 import { ClientGrpc } from '@nestjs/microservices';
+import { firstValueFrom } from 'rxjs';
+import { GraphQLError } from 'graphql';
 
 @Injectable()
 export class TaskService implements OnModuleInit {
@@ -18,8 +21,17 @@ export class TaskService implements OnModuleInit {
     this.taskService =
       this.client.getService<TaskServiceClient>(TASK_SERVICE_NAME);
   }
-  create(createTaskDto: CreateTaskDto) {
-    return this.taskService.createTask(createTaskDto);
+  async createTask(createTaskDto: CreateTaskDto): Promise<Task | GraphQLError> {
+    try {
+      const task = await firstValueFrom(
+        this.taskService.createTask(createTaskDto),
+      );
+      return task;
+    } catch (error) {
+      return new GraphQLError(error.details, {
+        extensions: { code: error.code },
+      });
+    }
   }
 
   findOneTask(id: TaskId) {
@@ -30,8 +42,17 @@ export class TaskService implements OnModuleInit {
     return this.taskService.findAllTasks(ownerId);
   }
 
-  updateTask(updateTaskDto: UpdateTaskDto) {
-    return this.taskService.updateTask(updateTaskDto);
+  async updateTask(updateTaskDto: UpdateTaskDto): Promise<Task | GraphQLError> {
+    try {
+      const task = await firstValueFrom(
+        this.taskService.updateTask(updateTaskDto),
+      );
+      return task;
+    } catch (error) {
+      return new GraphQLError(error.details, {
+        extensions: { code: error.code },
+      });
+    }
   }
 
   removeTask(taskId: TaskId) {

@@ -2,13 +2,31 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+input CreateTaskInput {
+  ownerId: Float!
+  status: String!
+  title: String!
+}
+
+type Mutation {
+  createTask(createTaskInput: CreateTaskInput!): Task!
+  updateTask(updateTaskInput: UpdateTaskInput!): Task!
+}
+
 type Query {
-  task(id: Float!): Task!
+  findTask(id: Float!): Task!
 }
 
 type Task {
+  createdAt: String!
   id: Float!
   ownerId: String!
   status: String!
   title: String!
+  updatedAt: String!
+}
+
+input UpdateTaskInput {
+  id: Float!
+  status: String!
 }
