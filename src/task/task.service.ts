@@ -46,7 +46,7 @@ export class TaskService implements OnModuleInit {
     }
   }
 
-  async findAllTask(ownerId: OwnerId): Promise<Task[] | GraphQLError> {
+  async findAllTasks(ownerId: OwnerId): Promise<Task[] | GraphQLError> {
     try {
       const res = await lastValueFrom(this.taskService.findAllTasks(ownerId));
       if (!res.Tasks) {
