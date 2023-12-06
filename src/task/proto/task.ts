@@ -36,6 +36,8 @@ export interface Task {
   title: string;
   status: string;
   ownerId: number;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export const TASK_PACKAGE_NAME = "task";
