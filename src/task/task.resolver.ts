@@ -7,6 +7,8 @@ import { GraphQLError } from 'graphql';
 import { CreateTaskInput } from './dto/create-task.input';
 import { UpdateTaskInput } from './dto/update-task.input';
 import { GqlAuthGuard } from 'src/auth/graphql.auth.guard';
+import { GetUser } from 'src/auth/get-user.decorator';
+import { User } from 'src/auth/entities/user.entity';
 
 @UseGuards(GqlAuthGuard)
 @Resolver(() => TaskType)
@@ -16,6 +18,7 @@ export class TaskResolver {
   @Query(() => TaskType)
   async findOneTask(
     @Args('id', ParseIntPipe) id: number,
+    @GetUser() user: User,
   ): Promise<Task | GraphQLError> {
     return this.taskService.findOneTask({ id });
   }

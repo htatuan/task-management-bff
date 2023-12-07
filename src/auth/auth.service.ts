@@ -1,5 +1,7 @@
 import {
+  ConflictException,
   Injectable,
+  InternalServerErrorException,
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
@@ -19,7 +21,7 @@ export class AuthService {
   }
 
   async login(username: string, password: string): Promise<User> {
-    var user = await this.userRepository.findOneBy({ username, password });
+    const user = await this.userRepository.findOneBy({ username, password });
     if (!user) {
       throw new UnauthorizedException('Please check your login credentials');
     }
@@ -27,7 +29,18 @@ export class AuthService {
   }
 
   async create(createUserInput: CreateUserInput): Promise<User> {
-    var user = this.userRepository.create(createUserInput);
-    return this.userRepository.save(user);
+    try {
+      const { username, password } = createUserInput;
+      const user = this.userRepository.findOneBy({ username });
+      const creatingUser = this.userRepository.create({ username, password });
+      return await this.userRepository.save(creatingUser);
+    } catch (error) {
+      console.log(error);
+      if (error.code === '23505') {
+        throw new ConflictException('Username already exists');
+      } else {
+        throw new InternalServerErrorException();
+      }
+    }
   }
 }
