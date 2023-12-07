@@ -2,9 +2,11 @@ import { Args, Query, Resolver } from '@nestjs/graphql';
 import { TaskType } from './task.type';
 import { TaskService } from './task.service';
 import { TaskId } from './proto/task';
-import { ParseIntPipe } from '@nestjs/common';
+import { ParseIntPipe, UseGuards } from '@nestjs/common';
+import { GqlAuthGuard } from 'src/auth/graphql.auth.guard';
 
 @Resolver((of) => TaskType)
+@UseGuards(GqlAuthGuard)
 export class TaskResolver {
   constructor(private taskService: TaskService) {}
 
@@ -12,11 +14,9 @@ export class TaskResolver {
   async task(@Args('id', ParseIntPipe) id: number) {
     try {
       const taskId: TaskId = { id };
-      const a = this.taskService.findOneTask(taskId);
-      console.log(a);
-      return a;
+      return this.taskService.findOneTask(taskId);
     } catch (error) {
-      console.log('error');
+      console.log(error);
     }
   }
 }

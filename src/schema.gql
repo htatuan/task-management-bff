@@ -2,7 +2,17 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+input CreateUserInput {
+  password: String!
+  username: String!
+}
+
+type Mutation {
+  register(createUserInput: CreateUserInput!): User!
+}
+
 type Query {
+  login(password: String!, username: String!): User!
   task(id: Float!): Task!
 }
 
@@ -11,4 +21,11 @@ type Task {
   ownerId: String!
   status: String!
   title: String!
+}
+
+type User {
+  accessToken: String!
+  id: Float!
+  password: String!
+  username: String!
 }

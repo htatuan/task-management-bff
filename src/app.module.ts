@@ -8,6 +8,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TaskModule } from './task/task.module';
 import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin/landingPage/default';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -36,10 +37,11 @@ import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
       sortSchema: true,
       playground: true,
-      //  plugins: [ApolloServerPluginLandingPageLocalDefault()],
     }),
 
     TaskModule,
+
+    AuthModule,
   ],
 })
 export class AppModule {}
