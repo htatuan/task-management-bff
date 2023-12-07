@@ -13,4 +13,10 @@ export class TaskType {
 
   @Field()
   ownerId: string;
+
+  @Field()
+  createdAt: string;
+
+  @Field()
+  updatedAt: string;
 }

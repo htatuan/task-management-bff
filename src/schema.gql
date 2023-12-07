@@ -2,30 +2,33 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-input CreateUserInput {
-  password: String!
-  username: String!
-}
-
-type Mutation {
-  register(createUserInput: CreateUserInput!): User!
-}
-
-type Query {
-  login(password: String!, username: String!): User!
-  task(id: Float!): Task!
-}
-
-type Task {
-  id: Float!
-  ownerId: String!
+input CreateTaskInput {
+  ownerId: Float!
   status: String!
   title: String!
 }
 
-type User {
-  accessToken: String!
+type Mutation {
+  createTask(createTaskInput: CreateTaskInput!): Task!
+  deleteTask(id: Float!): Boolean!
+  updateTask(updateTaskInput: UpdateTaskInput!): Task!
+}
+
+type Query {
+  findAllTasks(ownerId: Float!): [Task!]!
+  findOneTask(id: Float!): Task!
+}
+
+type Task {
+  createdAt: String!
   id: Float!
-  password: String!
-  username: String!
+  ownerId: String!
+  status: String!
+  title: String!
+  updatedAt: String!
+}
+
+input UpdateTaskInput {
+  id: Float!
+  status: String!
 }
