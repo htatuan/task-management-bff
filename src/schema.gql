@@ -8,15 +8,22 @@ input CreateTaskInput {
   title: String!
 }
 
+input CreateUserInput {
+  password: String!
+  username: String!
+}
+
 type Mutation {
   createTask(createTaskInput: CreateTaskInput!): Task!
   deleteTask(id: Float!): Boolean!
+  register(createUserInput: CreateUserInput!): User!
   updateTask(updateTaskInput: UpdateTaskInput!): Task!
 }
 
 type Query {
   findAllTasks(ownerId: Float!): [Task!]!
   findOneTask(id: Float!): Task!
+  login(password: String!, username: String!): User!
 }
 
 type Task {
@@ -31,4 +38,11 @@ type Task {
 input UpdateTaskInput {
   id: Float!
   status: String!
+}
+
+type User {
+  accessToken: String!
+  id: Float!
+  password: String!
+  username: String!
 }
