@@ -13,9 +13,15 @@ input CreateUserInput {
   username: String!
 }
 
+input Credentials {
+  password: String!
+  username: String!
+}
+
 type Mutation {
   createTask(createTaskInput: CreateTaskInput!): Task!
   deleteTask(id: Float!): Boolean!
+  login(credentials: Credentials!): User!
   register(createUserInput: CreateUserInput!): User!
   updateTask(updateTaskInput: UpdateTaskInput!): Task!
 }
@@ -23,7 +29,6 @@ type Mutation {
 type Query {
   findAllTasks(ownerId: Float!): [Task!]!
   findOneTask(id: Float!): Task!
-  login(password: String!, username: String!): User!
 }
 
 type Task {

@@ -3,6 +3,8 @@ import { AuthService } from './auth.service';
 import { UserType } from './types/user.type';
 import { CreateUserInput } from './types/user.input';
 import { JwtService } from '@nestjs/jwt';
+import { credentials } from '@grpc/grpc-js';
+import { CredentialsInput } from './types/credentials.input';
 
 @Resolver((of) => UserType)
 export class AuthResolver {
@@ -11,11 +13,9 @@ export class AuthResolver {
     private jwtService: JwtService,
   ) {}
 
-  @Query(() => UserType)
-  async login(
-    @Args('username') username: string,
-    @Args('password') password: string,
-  ) {
+  @Mutation(() => UserType)
+  async login(@Args('credentials') credentialsInput: CredentialsInput) {
+    const { username, password } = credentialsInput;
     var user = await this.authService.login(username, password);
     const accessToken: string = this.jwtService.sign({ username });
     return { ...user, accessToken };
