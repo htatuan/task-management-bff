@@ -7,7 +7,7 @@ import {
   TaskId,
   TaskServiceClient,
   UpdateTaskDto,
-} from './proto/task';
+} from '../proto/task';
 import { ClientGrpc } from '@nestjs/microservices';
 import { firstValueFrom, lastValueFrom } from 'rxjs';
 import { GraphQLError } from 'graphql';

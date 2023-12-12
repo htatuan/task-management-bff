@@ -9,26 +9,68 @@ input CreateTaskInput {
 }
 
 input CreateUserInput {
+  email: String!
   password: String!
   username: String!
 }
 
-input Credentials {
+input ForgotPasswordDto {
+  email: String!
+}
+
+type ForgotPasswordResponse {
+  message: String!
+}
+
+input LoginInput {
   password: String!
   username: String!
+}
+
+type LoginResponse {
+  accessToken: String!
+  user: User!
 }
 
 type Mutation {
   createTask(createTaskInput: CreateTaskInput!): Task!
+  createUser(createUserInput: CreateUserInput!): User!
   deleteTask(id: Float!): Boolean!
-  login(credentials: Credentials!): User!
-  register(createUserInput: CreateUserInput!): User!
+  login(loginInput: LoginInput!): LoginResponse!
+  register(registerInput: RegisterInput!): RegisterReponse!
+  removeUser(id: Int!): User!
+  resetPassword(resetPasswordInput: ResetPasswordInput!): ResetPasswordResponse!
   updateTask(updateTaskInput: UpdateTaskInput!): Task!
+  updateUser(updateUserInput: UpdateUserInput!): User!
 }
 
 type Query {
   findAllTasks(ownerId: Float!): [Task!]!
   findOneTask(id: Float!): Task!
+  forgotPassword(forgotPasswordInput: ForgotPasswordDto!): ForgotPasswordResponse!
+  user(username: String!): User!
+  users: [User!]!
+}
+
+input RegisterInput {
+  email: String!
+  password: String!
+  username: String!
+}
+
+type RegisterReponse {
+  email: String!
+  id: Float!
+  username: String!
+}
+
+input ResetPasswordInput {
+  forgotPasswordToken: String!
+  password: String!
+}
+
+type ResetPasswordResponse {
+  message: String!
 }
 
 type Task {
@@ -45,9 +87,16 @@ input UpdateTaskInput {
   status: String!
 }
 
+input UpdateUserInput {
+  email: String
+  id: Int!
+  password: String
+  username: String
+}
+
 type User {
-  accessToken: String!
-  id: Float!
+  email: String!
+  id: Int!
   password: String!
   username: String!
 }
