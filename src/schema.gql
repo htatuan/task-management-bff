@@ -48,6 +48,7 @@ type Query {
   findAllTasks(ownerId: Float!): [Task!]!
   findOneTask(id: Float!): Task!
   forgotPassword(forgotPasswordInput: ForgotPasswordDto!): ForgotPasswordResponse!
+  searchTask(keyword: String!): [Task!]!
   user(username: String!): User!
   users: [User!]!
 }

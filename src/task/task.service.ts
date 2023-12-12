@@ -2,6 +2,7 @@ import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import {
   CreateTaskDto,
   OwnerId,
+  SearchRequest,
   TASK_SERVICE_NAME,
   Task,
   TaskId,
@@ -39,6 +40,19 @@ export class TaskService implements OnModuleInit {
       const res = await lastValueFrom(this.taskService.findOneTask(id));
 
       return res;
+    } catch (error) {
+      return new GraphQLError(error.details, {
+        extensions: { code: error.code },
+      });
+    }
+  }
+
+  async searchTask(request: SearchRequest): Promise<Task[] | GraphQLError> {
+    try {
+      console.log(request);
+      const res = await lastValueFrom(this.taskService.searchTask(request));
+
+      return res.Tasks || [];
     } catch (error) {
       return new GraphQLError(error.details, {
         extensions: { code: error.code },
