@@ -26,7 +26,7 @@ export class AuthResolver {
     return this.authService.register(registerInput);
   }
 
-  @Query(() => ForgotPasswordResponse)
+  @Mutation(() => ForgotPasswordResponse)
   forgotPassword(
     @Args('forgotPasswordInput') forgotPasswordInput: ForgotPasswordDto,
   ) {
