@@ -36,6 +36,7 @@ type Mutation {
   createTask(createTaskInput: CreateTaskInput!): Task!
   createUser(createUserInput: CreateUserInput!): User!
   deleteTask(id: Float!): Boolean!
+  forgotPassword(forgotPasswordInput: ForgotPasswordDto!): ForgotPasswordResponse!
   login(loginInput: LoginInput!): LoginResponse!
   register(registerInput: RegisterInput!): RegisterReponse!
   removeUser(id: Int!): User!
@@ -47,7 +48,6 @@ type Mutation {
 type Query {
   findAllTasks(ownerId: Float!): [Task!]!
   findOneTask(id: Float!): Task!
-  forgotPassword(forgotPasswordInput: ForgotPasswordDto!): ForgotPasswordResponse!
   user(username: String!): User!
   users: [User!]!
 }
