@@ -1,14 +1,13 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { join } from 'path';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TaskModule } from './task/task.module';
-import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin/landingPage/default';
 import { AuthModule } from './auth/auth.module';
+import { EmailModule } from './email/email.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -25,8 +24,8 @@ import { AuthModule } from './auth/auth.module';
           synchronize: true,
           host: configService.get('DB_HOST'),
           port: configService.get('DB_PORT'),
-          username: 'postgres',
-          password: 'postgres123',
+          username: configService.get('DB_USERNAME'),
+          password: configService.get('DB_PASSWORD'),
           database: configService.get('DB_DATABASE'),
         };
       },
@@ -42,6 +41,9 @@ import { AuthModule } from './auth/auth.module';
     TaskModule,
 
     AuthModule,
+
+    EmailModule,
+    UsersModule,
   ],
 })
 export class AppModule {}

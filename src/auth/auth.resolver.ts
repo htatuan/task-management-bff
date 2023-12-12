@@ -1,28 +1,42 @@
-import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { Args, Context, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { AuthService } from './auth.service';
-import { UserType } from './types/user.type';
-import { CreateUserInput } from './types/user.input';
-import { JwtService } from '@nestjs/jwt';
-import { credentials } from '@grpc/grpc-js';
-import { CredentialsInput } from './types/credentials.input';
+import { LoginInput } from './dto/login.input';
+import { LoginResponse } from './types/login.response';
+import { UseGuards } from '@nestjs/common';
+import { GqlAuthGuard } from './gql-auth.guard';
+import { RegisterReponse } from './types/register.response';
+import { RegisterInput } from './dto/register.input';
+import { ForgotPasswordDto } from './dto/forgot-password.input';
+import { ForgotPasswordResponse } from './types/forgot-password.reponse';
+import { ResetPasswordInput } from './dto/reset-password.input';
+import { ResetPasswordResponse } from './types/reset-password.reponse';
 
-@Resolver((of) => UserType)
+@Resolver()
 export class AuthResolver {
-  constructor(
-    private readonly authService: AuthService,
-    private jwtService: JwtService,
-  ) {}
+  constructor(private authService: AuthService) {}
 
-  @Mutation(() => UserType)
-  async login(@Args('credentials') credentialsInput: CredentialsInput) {
-    const { username, password } = credentialsInput;
-    var user = await this.authService.login(username, password);
-    const accessToken: string = this.jwtService.sign({ username });
-    return { ...user, accessToken };
+  @Mutation(() => LoginResponse)
+  @UseGuards(GqlAuthGuard)
+  login(@Args('loginInput') loginInput: LoginInput, @Context() context) {
+    return this.authService.login(context.user);
   }
 
-  @Mutation((returns) => UserType)
-  async register(@Args('createUserInput') createUserInput: CreateUserInput) {
-    return this.authService.create(createUserInput);
+  @Mutation(() => RegisterReponse)
+  register(@Args('registerInput') registerInput: RegisterInput) {
+    return this.authService.register(registerInput);
+  }
+
+  @Query(() => ForgotPasswordResponse)
+  forgotPassword(
+    @Args('forgotPasswordInput') forgotPasswordInput: ForgotPasswordDto,
+  ) {
+    return this.authService.forgotPassword(forgotPasswordInput);
+  }
+
+  @Mutation(() => ResetPasswordResponse)
+  resetPassword(
+    @Args('resetPasswordInput') resetPasswordInput: ResetPasswordInput,
+  ) {
+    return this.authService.resetPassword(resetPasswordInput);
   }
 }
