@@ -17,7 +17,7 @@ import { ConfigService } from '@nestjs/config';
         options: {
           url: 'localhost:50051',
           package: 'task',
-          protoPath: join(__dirname, '../task/proto/task.proto'),
+          protoPath: join(__dirname, '../proto/task.proto'),
         },
       },
     ]),
