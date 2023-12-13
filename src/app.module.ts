@@ -48,6 +48,7 @@ import { GraphQLError } from 'graphql';
         return {
           message: originalError.message,
           code: error.extensions?.code,
+          statusCode: originalError.statusCode,
         };
       },
     }),
