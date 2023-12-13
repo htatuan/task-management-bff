@@ -8,6 +8,7 @@ import { TaskModule } from './task/task.module';
 import { AuthModule } from './auth/auth.module';
 import { EmailModule } from './email/email.module';
 import { UsersModule } from './users/users.module';
+import { GraphQLError } from 'graphql';
 
 @Module({
   imports: [
@@ -36,6 +37,19 @@ import { UsersModule } from './users/users.module';
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
       sortSchema: true,
       playground: true,
+      formatError: (error: GraphQLError) => {
+        const originalError = error.extensions?.originalError as any;
+        if (!originalError) {
+          return {
+            message: error.message,
+            code: error.extensions?.code,
+          };
+        }
+        return {
+          message: originalError.message,
+          code: error.extensions?.code,
+        };
+      },
     }),
 
     TaskModule,

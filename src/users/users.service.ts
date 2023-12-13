@@ -1,5 +1,5 @@
 import {
-  ConflictException,
+  BadRequestException,
   Injectable,
   InternalServerErrorException,
 } from '@nestjs/common';
@@ -17,27 +17,18 @@ export class UsersService {
   ) {}
 
   async create(createUserInput: CreateUserInput): Promise<User> {
-    const user = await this.userRepository.findOneBy({
-      username: createUserInput.username,
+    const hashedPassword = await bcrypt.hash(createUserInput.password, 10);
+    const newUser = this.userRepository.create({
+      ...createUserInput,
+      password: hashedPassword,
     });
-    if (user) {
-      throw new ConflictException('Username already exists');
-    }
-    try {
-      const hashedPassword = await bcrypt.hash(createUserInput.password, 10);
-      const newUser = this.userRepository.create({
-        ...createUserInput,
-        password: hashedPassword,
-      });
-      return this.userRepository.save(newUser);
-    } catch (error) {
-      console.log(error);
-      if (error.code === '23505') {
-        throw new ConflictException('Username already exists');
+    return this.userRepository.save(newUser).catch((err) => {
+      if (err.code === '23505') {
+        throw new BadRequestException(err.detail);
       } else {
-        throw new InternalServerErrorException();
+        throw new InternalServerErrorException(err.detail);
       }
-    }
+    });
   }
 
   findAll(): Promise<User[]> {
