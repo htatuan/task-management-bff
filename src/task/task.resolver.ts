@@ -35,7 +35,6 @@ export class TaskResolver {
     @Args('keyword') keyword: string,
     @GetUser() user,
   ): Promise<Task[] | GraphQLError> {
-    console.log(user);
     const searchRequest: SearchRequest = {
       keyword: keyword,
       ownerId: user.userId,

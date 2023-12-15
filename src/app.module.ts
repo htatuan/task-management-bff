@@ -43,6 +43,10 @@ import { GraphQLError } from 'graphql';
           return {
             message: error.message,
             code: error.extensions?.code,
+            statusCode:
+              error.extensions?.code === 'GRAPHQL_VALIDATION_FAILED'
+                ? 400
+                : 500,
           };
         }
         return {
