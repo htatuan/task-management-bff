@@ -1,7 +1,7 @@
 import { Args, Query, Resolver, Mutation } from '@nestjs/graphql';
 import { TaskType } from './task.type';
 import { TaskService } from './task.service';
-import { SearchRequest, Task } from '../proto/task';
+import { CreateTaskDto, SearchRequest, Task } from '../proto/task';
 import { ParseIntPipe, UseGuards } from '@nestjs/common';
 import { GraphQLError } from 'graphql';
 import { CreateTaskInput } from './dto/create-task.input';
@@ -54,8 +54,12 @@ export class TaskResolver {
     @Args('createTaskInput') createTaskInput: CreateTaskInput,
     @GetUser() user,
   ): Promise<Task | GraphQLError> {
-    createTaskInput.ownerId = user.userId;
-    return await this.taskService.createTask(createTaskInput);
+    const data: CreateTaskDto = {
+      title: createTaskInput.title,
+      status: createTaskInput.status,
+      ownerId: user.userId,
+    };
+    return await this.taskService.createTask(data);
   }
 
   @Mutation(() => TaskType)

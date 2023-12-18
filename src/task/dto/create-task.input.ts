@@ -11,8 +11,4 @@ export class CreateTaskInput{
     @IsNotEmpty()
     @IsString()
     status: string;
-    @Field()
-    @IsNotEmpty()
-    @IsInt()
-    ownerId: number;
 }
