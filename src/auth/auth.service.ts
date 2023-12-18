@@ -94,7 +94,7 @@ export class AuthService {
         );
         return { message: 'Reset password succesfully' };
       }
-      return null;
+      throw new BadRequestException('User not found');
     } catch (error) {
       throw new BadRequestException(error);
     }

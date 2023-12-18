@@ -1,5 +1,5 @@
 import {
-  BadRequestException,
+  ConflictException,
   Injectable,
   InternalServerErrorException,
 } from '@nestjs/common';
@@ -24,7 +24,7 @@ export class UsersService {
     });
     return this.userRepository.save(newUser).catch((err) => {
       if (err.code === '23505') {
-        throw new BadRequestException(err.detail);
+        throw new ConflictException(err.detail);
       } else {
         throw new InternalServerErrorException(err.detail);
       }

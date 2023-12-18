@@ -3,7 +3,7 @@ import { AuthService } from './auth.service';
 import { LoginInput } from './dto/login.input';
 import { LoginResponse } from './types/login.response';
 import { UseGuards } from '@nestjs/common';
-import { GqlAuthGuard } from './gql-auth.guard';
+import { GqlAuthGuard } from './guards/gql-auth.guard';
 import { RegisterReponse } from './types/register.response';
 import { RegisterInput } from './dto/register.input';
 import { ForgotPasswordDto } from './dto/forgot-password.input';
