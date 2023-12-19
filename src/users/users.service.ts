@@ -23,7 +23,7 @@ export class UsersService {
       password: hashedPassword,
     });
     try {
-      const res = this.userRepository.save(newUser);
+      const res = await this.userRepository.save(newUser);
       return res;
     } catch (error) {
       if (error.code === '23505') {
@@ -44,14 +44,6 @@ export class UsersService {
 
   findOneByEmail(email: string): Promise<User> {
     return this.userRepository.findOneBy({ email });
-  }
-
-  update(id: number, updateUserInput: UpdateUserInput) {
-    return `This action updates a #${id} user`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} user`;
   }
 
   resetPassword(id: number, newPassword: string) {

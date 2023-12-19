@@ -53,7 +53,6 @@ describe('UsersService', () => {
 
       // act
       const result = await service.create(user);
-      console.log('resule=> ', result);
 
       // assert
       expect(bcrypt.hash).toHaveBeenCalledWith('12345678', 10);
@@ -62,33 +61,39 @@ describe('UsersService', () => {
       expect(result).toEqual(user);
     });
 
-    // it('Should throw ConflictException if duplicate username', async () => {
-    //   //arrange
-    //   const userStub = createUserStub();
-    //   const user = {
-    //     username: 'baonghiem',
-    //     email: 'test@gmail.com',
-    //     password: '12345678',
-    //   };
-    //   const error = {
-    //     code: '23505',
-    //   };
-    //   jest.spyOn(bcrypt, 'hash').mockImplementation(() => 'hashedPassword');
-    //   jest.spyOn(mockUserRepository, 'create').mockResolvedValue(user);
-    //   jest.spyOn(mockUserRepository, 'save').mockResolvedValue(user);
+    it('Should throw ConflictException if duplicate username or email', async () => {
+      //arrange
+      const user = {
+        username: 'baonghiem',
+        email: 'test@gmail.com',
+        password: '12345678',
+      };
+      jest.spyOn(mockUserRepository, 'save').mockImplementation(() => {
+        throw { code: '23505', detail: 'test message' };
+      });
 
-    //   // act
-    //   const result = await service.create(user);
-    //   console.log('resuleeeeeeee=> ', result);
+      // assert
+      await expect(service.create(user)).rejects.toThrow(
+        new ConflictException('test message'),
+      );
+    });
 
-    //   // assert
-    //   expect(bcrypt.hash).toHaveBeenCalledWith('12345678', 10);
-    //   expect(mockUserRepository.create).toHaveBeenCalled();
-    //   expect(mockUserRepository.save).toHaveBeenCalled();
-    //   expect(result).rejects.toThrow(
-    //     new InternalServerErrorException(),
-    //   );
-    // });
+    it('Should throw InternalServerErrorException if can not create user', async () => {
+      //arrange
+      const user = {
+        username: 'baonghiem',
+        email: 'test@gmail.com',
+        password: '12345678',
+      };
+      jest.spyOn(mockUserRepository, 'save').mockImplementation(() => {
+        throw { code: '1', detail: 'test message' };
+      });
+
+      // assert
+      await expect(service.create(user)).rejects.toThrow(
+        new InternalServerErrorException('test message'),
+      );
+    });
   });
 
   describe('findOneByUsername', () => {
