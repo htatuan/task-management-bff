@@ -35,18 +35,6 @@ export class TaskService implements OnModuleInit {
     }
   }
 
-  async findOneTask(id: TaskId): Promise<Task | GraphQLError> {
-    try {
-      const res = await lastValueFrom(this.taskService.findOneTask(id));
-
-      return res;
-    } catch (error) {
-      return new GraphQLError(error.details, {
-        extensions: { code: error.code },
-      });
-    }
-  }
-
   async searchTask(request: SearchRequest): Promise<Task[] | GraphQLError> {
     try {
       console.log(request);

@@ -5,7 +5,6 @@ package task;
 service TaskService {
   rpc CreateTask (CreateTaskDto) returns (Task) {}
   rpc FindAllTasks (OwnerId) returns (Tasks) {}
-  rpc FindOneTask (TaskId) returns (Task) {}
   rpc UpdateTask (UpdateTaskDto) returns (Task) {}
   rpc RemoveTask (TaskId) returns (RemoveTaskResponse) {}
   rpc SearchTask (SearchRequest) returns(Tasks) {}

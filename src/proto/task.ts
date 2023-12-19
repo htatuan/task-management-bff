@@ -52,8 +52,6 @@ export interface TaskServiceClient {
 
   findAllTasks(request: OwnerId): Observable<Tasks>;
 
-  findOneTask(request: TaskId): Observable<Task>;
-
   updateTask(request: UpdateTaskDto): Observable<Task>;
 
   removeTask(request: TaskId): Observable<RemoveTaskResponse>;
@@ -65,8 +63,6 @@ export interface TaskServiceController {
   createTask(request: CreateTaskDto): Promise<Task> | Observable<Task> | Task;
 
   findAllTasks(request: OwnerId): Promise<Tasks> | Observable<Tasks> | Tasks;
-
-  findOneTask(request: TaskId): Promise<Task> | Observable<Task> | Task;
 
   updateTask(request: UpdateTaskDto): Promise<Task> | Observable<Task> | Task;
 
@@ -87,7 +83,6 @@ export function TaskServiceControllerMethods() {
     const grpcMethods: string[] = [
       'createTask',
       'findAllTasks',
-      'findOneTask',
       'updateTask',
       'removeTask',
       'searchTask',
