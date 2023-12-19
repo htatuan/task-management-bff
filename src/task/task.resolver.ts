@@ -15,13 +15,6 @@ import { User } from 'src/users/entities/user.entity';
 export class TaskResolver {
   constructor(private taskService: TaskService) {}
 
-  @Query(() => TaskType)
-  async findOneTask(
-    @Args('id', ParseIntPipe) id: number,
-  ): Promise<Task | GraphQLError> {
-    return this.taskService.findOneTask({ id });
-  }
-
   @Query(() => [TaskType])
   async findAllTasks(
     @Args('ownerId', ParseIntPipe) ownerId: number,
