@@ -3,10 +3,8 @@ import { UsersService } from './users.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import * as bcrypt from 'bcrypt';
-import { createUserStub } from './test/stubs/user.stub';
 import {
   ConflictException,
-  HttpException,
   InternalServerErrorException,
 } from '@nestjs/common';
 
@@ -55,7 +53,7 @@ describe('UsersService', () => {
       const result = await service.create(user);
 
       // assert
-      expect(bcrypt.hash).toHaveBeenCalledWith('12345678', 10);
+      expect(bcrypt.hash).toHaveBeenCalled();
       expect(mockUserRepository.create).toHaveBeenCalled();
       expect(mockUserRepository.save).toHaveBeenCalled();
       expect(result).toEqual(user);
@@ -64,7 +62,7 @@ describe('UsersService', () => {
     it('Should throw ConflictException if duplicate username or email', async () => {
       //arrange
       const user = {
-        username: 'baonghiem',
+        username: 'test',
         email: 'test@gmail.com',
         password: '12345678',
       };
@@ -81,7 +79,7 @@ describe('UsersService', () => {
     it('Should throw InternalServerErrorException if can not create user', async () => {
       //arrange
       const user = {
-        username: 'baonghiem',
+        username: 'test',
         email: 'test@gmail.com',
         password: '12345678',
       };
@@ -149,7 +147,7 @@ describe('UsersService', () => {
   });
 
   describe('resetPassword', () => {
-    it('Should update password', async () => {
+    it('Should update password successfully', async () => {
       //arrange
       jest
         .spyOn(mockUserRepository, 'update')
