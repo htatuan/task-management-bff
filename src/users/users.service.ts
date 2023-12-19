@@ -22,13 +22,16 @@ export class UsersService {
       ...createUserInput,
       password: hashedPassword,
     });
-    return this.userRepository.save(newUser).catch((err) => {
-      if (err.code === '23505') {
-        throw new ConflictException(err.detail);
+    try {
+      const res = await this.userRepository.save(newUser);
+      return res;
+    } catch (error) {
+      if (error.code === '23505') {
+        throw new ConflictException(error.detail);
       } else {
-        throw new InternalServerErrorException(err.detail);
+        throw new InternalServerErrorException(error.detail);
       }
-    });
+    }
   }
 
   findAll(): Promise<User[]> {
@@ -41,14 +44,6 @@ export class UsersService {
 
   findOneByEmail(email: string): Promise<User> {
     return this.userRepository.findOneBy({ email });
-  }
-
-  update(id: number, updateUserInput: UpdateUserInput) {
-    return `This action updates a #${id} user`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} user`;
   }
 
   resetPassword(id: number, newPassword: string) {
