@@ -88,6 +88,23 @@
     "collectCoverageFrom": [
       "**/*.(t|j)s"
     ],
+    "coveragePathIgnorePatterns": [
+      "/node_modules/",
+      "/src/auth/dto/",
+      "src/app.controller.ts",
+      "src/app.module.ts",
+      "src/app.service.ts",
+      "src/main.ts",
+      "src/auth/auth.module.ts",
+      "src/auth/strategies",
+      "src/auth/test/stubs",
+      "src/email/email.module.ts",
+      "src/email/mocks",
+      "src/proto",
+      "src/task/task.module.ts",
+      "src/users/users.module.ts",
+      "src/users/dto"
+    ],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"
   }

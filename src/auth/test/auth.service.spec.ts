@@ -39,7 +39,9 @@ describe('AuthService', () => {
 
     authService = module.get<AuthService>(AuthService);
     usersService = module.get<UsersService>(UsersService);
+    usersService.findOneByUsername = jest.fn();
     jwtService = module.get<JwtService>(JwtService);
+    jwtService.verify = jest.fn();
     configService = module.get<ConfigService>(ConfigService);
     emailService = module.get<EmailService>(EmailService);
   });
@@ -144,7 +146,9 @@ describe('AuthService', () => {
       //Arrange
       jest
         .spyOn(jwtService, 'verify')
-        .mockImplementationOnce(() => new BadRequestException());
+        .mockImplementationOnce(() =>
+          Promise.reject(new BadRequestException()),
+        );
       //Act && Assert
       await expect(authService.resetPassword).rejects.toThrow(
         BadRequestException,
@@ -154,7 +158,7 @@ describe('AuthService', () => {
       //Arrange
       jest
         .spyOn(jwtService, 'verify')
-        .mockImplementationOnce(() => verifiedToken);
+        .mockImplementationOnce(() => Promise.resolve(verifiedToken));
       jest.spyOn(bcrypt, 'hash').mockImplementationOnce(() => 'hashedPassword');
       jest.spyOn(usersService, 'findOneByUsername').mockResolvedValueOnce(null);
       //Act && Assert
@@ -165,7 +169,9 @@ describe('AuthService', () => {
     it('should return a message: Reset password succesfully', async () => {
       //Arrange
       jest.spyOn(configService, 'get').mockReturnValue('forgotsecret');
-      jest.spyOn(jwtService, 'verify').mockReturnValueOnce(() => verifiedToken);
+      jest
+        .spyOn(jwtService, 'verify')
+        .mockImplementationOnce(() => Promise.resolve(verifiedToken));
       jest.spyOn(bcrypt, 'hash').mockImplementation(() => 'hashedPassword');
       jest
         .spyOn(usersService, 'findOneByUsername')
@@ -184,6 +190,61 @@ describe('AuthService', () => {
       expect(result).toEqual({
         message: 'Reset password succesfully',
       });
+    });
+  });
+
+  describe('validateUser', () => {
+    it('should return null for invalid username or password', async () => {
+      const username = 'invaliduser';
+      const password = 'invalidpassword';
+
+      jest.spyOn(usersService, 'findOneByUsername').mockResolvedValueOnce(null);
+
+      const result = await authService.validateUser(username, password);
+
+      expect(usersService.findOneByUsername).toHaveBeenCalledWith(username);
+      expect(result).toBeNull();
+    });
+    it('should validate user with correct username and password', async () => {
+      const username = 'admin';
+      const password = '12345678';
+      const user = { username, password };
+      jest
+        .spyOn(usersService, 'findOneByUsername')
+        .mockResolvedValueOnce(createUserStub());
+      jest.spyOn(bcrypt, 'compare').mockImplementationOnce(() => true);
+
+      const result = await authService.validateUser(username, password);
+
+      expect(usersService.findOneByUsername).toHaveBeenCalledWith(username);
+      expect(bcrypt.compare).toHaveBeenCalledWith(password, user.password);
+      expect(result).toEqual({
+        username,
+        password: undefined,
+        id: 1,
+        email: 'admin@example.com',
+      });
+    });
+  });
+
+  describe('generateForgotPasswordLink', () => {
+    it('should generate a valid forgot password link', async () => {
+      const secret = 'fakeSecretKey';
+      const expiresIn = '5m';
+      const expectedToken = 'fakeJwtToken';
+
+      jest.spyOn(configService, 'get').mockReturnValueOnce(secret);
+      jest.spyOn(jwtService, 'sign').mockReturnValueOnce(expectedToken);
+
+      const result =
+        await authService.generateForgotPasswordLink(createUserStub());
+
+      expect(configService.get).toHaveBeenCalledWith('FORGOT_PASSWORD_SECRET');
+      expect(jwtService.sign).toHaveBeenCalledWith(
+        { user: createUserStub() },
+        { secret, expiresIn },
+      );
+      expect(result).toEqual(expectedToken);
     });
   });
 });
