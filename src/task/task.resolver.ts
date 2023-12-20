@@ -6,9 +6,9 @@ import { ParseIntPipe, UseGuards } from '@nestjs/common';
 import { GraphQLError } from 'graphql';
 import { CreateTaskInput } from './dto/create-task.input';
 import { UpdateTaskInput } from './dto/update-task.input';
-import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { GetUser } from 'src/auth/get-user.decorator';
 import { User } from 'src/users/entities/user.entity';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 
 @UseGuards(JwtAuthGuard)
 @Resolver(() => TaskType)

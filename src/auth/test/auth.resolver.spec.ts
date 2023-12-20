@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { AuthResolver } from '../auth.resolver';
 import { AuthService } from '../auth.service';
 import { createUserStub } from 'src/users/test/stubs/user.stub';
-import { isGuarded } from 'src/utils/isGuarded';
+import { isGuarded } from 'src/shared/test/utils/isGuarded';
 import { GqlAuthGuard } from '../guards/gql-auth.guard';
 import { mock_access_token, mock_forgot_password_token } from './mocks/tokens.mock';
 
